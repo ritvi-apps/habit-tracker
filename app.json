@@ -1,17 +1,17 @@
 {
-  "expo": {
-    "name": "Habit Tracker",
-    "slug": "habit-tracker",
-    "scheme": "habittracker",
-    "version": "0.1.0",
-    "platforms": ["web", "android"],
-    "userInterfaceStyle": "automatic",
-    "web": {
-      "output": "single"
-    },
-    "plugins": ["expo-router", "expo-status-bar"],
-    "experiments": {
-      "typedRoutes": true
-    }
-  }
+	"expo": {
+		"name": "Habit Tracker",
+		"slug": "habit-tracker",
+		"scheme": "habittracker",
+		"version": "0.1.0",
+		"platforms": ["web", "android"],
+		"userInterfaceStyle": "automatic",
+		"web": {
+			"output": "single"
+		},
+		"plugins": ["expo-router", "expo-status-bar"],
+		"experiments": {
+			"typedRoutes": true
+		}
+	}
 }
