@@ -3,3 +3,6 @@ dist/
 .expo/
 .env.local
 .DS_Store
+expo-env.d.ts
+android/
+ios/
