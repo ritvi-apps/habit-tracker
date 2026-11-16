@@ -1,0 +1,7 @@
+# Expo needs a hoisted node_modules: @expo/cli, metro and react-native
+# deep-import internals of their own dependencies, which pnpm's default
+# isolated layout does not expose.
+nodeLinker: hoisted
+
+# Supply-chain delay: do not install a version published less than 24h ago.
+minimumReleaseAge: 1440

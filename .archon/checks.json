@@ -1,1 +1,7 @@
-[]
+[
+	{ "name": "types", "command": ["pnpm", "typecheck"] },
+	{ "name": "lint", "command": ["pnpm", "lint"] },
+	{ "name": "tests", "command": ["pnpm", "test"] },
+	{ "name": "web", "command": ["pnpm", "web:build"] },
+	{ "name": "expo", "command": ["npx", "--yes", "expo-doctor"] }
+]
