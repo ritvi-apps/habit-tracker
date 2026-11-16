@@ -7,6 +7,8 @@ export type Habit = {
 	id: string;
 	name: string;
 	createdAt: string;
+	// Local days the habit was ticked, as YYYY-MM-DD.
+	doneDays: string[];
 };
 
 // Trimmed name, or null when nothing is left.
@@ -29,7 +31,7 @@ export function addHabit(
 	if (clean === null) return habits;
 	return [
 		...habits,
-		{ id: newId(now), name: clean, createdAt: now.toISOString() },
+		{ id: newId(now), name: clean, createdAt: now.toISOString(), doneDays: [] },
 	];
 }
 
@@ -48,13 +50,27 @@ export function deleteHabit(habits: Habit[], id: string): Habit[] {
 	return habits.filter((h) => h.id !== id);
 }
 
+// Ticks the day if it is not ticked yet, and unticks it if it is.
+export function toggleDay(habits: Habit[], id: string, day: string): Habit[] {
+	if (!habits.some((h) => h.id === id)) return habits;
+	return habits.map((h) => {
+		if (h.id !== id) return h;
+		const doneDays = h.doneDays.includes(day)
+			? h.doneDays.filter((d) => d !== day)
+			: [...h.doneDays, day];
+		return { ...h, doneDays };
+	});
+}
+
 function isHabit(value: unknown): value is Habit {
 	if (typeof value !== "object" || value === null) return false;
 	const v = value as Record<string, unknown>;
 	return (
 		typeof v.id === "string" &&
 		typeof v.name === "string" &&
-		typeof v.createdAt === "string"
+		typeof v.createdAt === "string" &&
+		Array.isArray(v.doneDays) &&
+		v.doneDays.every((d) => typeof d === "string")
 	);
 }
 

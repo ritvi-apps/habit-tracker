@@ -16,7 +16,9 @@ import {
 	loadHabits,
 	renameHabit,
 	saveHabits,
+	toggleDay,
 } from "../habits/storage";
+import { bestStreak, currentStreak, dayKey } from "../habits/streaks";
 
 export default function Home() {
 	const [habits, setHabits] = useState<Habit[]>([]);
@@ -24,6 +26,7 @@ export default function Home() {
 	const [newName, setNewName] = useState("");
 	const [editingId, setEditingId] = useState<string | null>(null);
 	const [editName, setEditName] = useState("");
+	const today = dayKey(new Date());
 
 	useEffect(() => {
 		loadHabits().then((list) => {
@@ -97,7 +100,22 @@ export default function Home() {
 						</View>
 					) : (
 						<View style={styles.row}>
-							<Text style={styles.name}>{item.name}</Text>
+							<View style={styles.info}>
+								<Text style={styles.name}>{item.name}</Text>
+								<Text style={styles.streak}>
+									Streak {currentStreak(item.doneDays, today)} · Best{" "}
+									{bestStreak(item.doneDays)}
+								</Text>
+							</View>
+							<Button
+								title={item.doneDays.includes(today) ? "Undo" : "Done"}
+								onPress={() => update(toggleDay(habits, item.id, today))}
+								accessibilityLabel={
+									item.doneDays.includes(today)
+										? `Undo ${item.name} for today`
+										: `Mark ${item.name} done for today`
+								}
+							/>
 							<Button title="Rename" onPress={() => startRename(item)} />
 							<Button
 								title="Delete"
@@ -127,6 +145,8 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 8,
 		paddingVertical: 6,
 	},
-	name: { flex: 1, fontSize: 16 },
+	info: { flex: 1 },
+	name: { fontSize: 16 },
+	streak: { color: "#666", fontSize: 13 },
 	empty: { color: "#666" },
 });
