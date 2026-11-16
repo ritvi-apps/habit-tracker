@@ -19,6 +19,7 @@ import {
 	renameHabit,
 	STORAGE_KEY,
 	saveHabits,
+	toggleDay,
 } from "./storage";
 
 const now = new Date("2026-11-17T08:00:00.000Z");
@@ -34,6 +35,7 @@ describe("addHabit", () => {
 		expect(list[0].name).toBe("Read");
 		expect(list[0].createdAt).toBe(now.toISOString());
 		expect(list[0].id).not.toBe("");
+		expect(list[0].doneDays).toEqual([]);
 	});
 
 	it("gives each habit its own id", () => {
@@ -80,6 +82,26 @@ describe("deleteHabit", () => {
 	});
 });
 
+describe("toggleDay", () => {
+	const list = addHabit(addHabit([], "Read", now), "Walk", now);
+	const day = "2026-11-17";
+
+	it("ticks a day on the matching habit only", () => {
+		const ticked = toggleDay(list, list[0].id, day);
+		expect(ticked[0].doneDays).toEqual([day]);
+		expect(ticked[1]).toEqual(list[1]);
+	});
+
+	it("unticks a day that is already ticked", () => {
+		const ticked = toggleDay(list, list[0].id, day);
+		expect(toggleDay(ticked, list[0].id, day)[0].doneDays).toEqual([]);
+	});
+
+	it("leaves the list alone for an unknown id", () => {
+		expect(toggleDay(list, "nope", day)).toBe(list);
+	});
+});
+
 describe("loadHabits and saveHabits", () => {
 	it("loads an empty list when nothing is stored", async () => {
 		expect(await loadHabits()).toEqual([]);
@@ -102,8 +124,30 @@ describe("loadHabits and saveHabits", () => {
 	});
 
 	it("drops entries that are not habits", async () => {
-		const good = { id: "a", name: "Read", createdAt: now.toISOString() };
+		const good = {
+			id: "a",
+			name: "Read",
+			createdAt: now.toISOString(),
+			doneDays: ["2026-11-17"],
+		};
 		store.set(STORAGE_KEY, JSON.stringify([good, { id: 1 }, null]));
 		expect(await loadHabits()).toEqual([good]);
+	});
+
+	it("drops entries saved before doneDays existed", async () => {
+		const old = { id: "a", name: "Read", createdAt: now.toISOString() };
+		store.set(STORAGE_KEY, JSON.stringify([old]));
+		expect(await loadHabits()).toEqual([]);
+	});
+
+	it("drops entries whose doneDays are not strings", async () => {
+		const bad = {
+			id: "a",
+			name: "Read",
+			createdAt: now.toISOString(),
+			doneDays: [1],
+		};
+		store.set(STORAGE_KEY, JSON.stringify([bad]));
+		expect(await loadHabits()).toEqual([]);
 	});
 });
