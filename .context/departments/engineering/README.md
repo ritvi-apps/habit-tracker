@@ -6,12 +6,13 @@ Builds Habit Tracker.
 
 - Stack: Expo (React Native) with TypeScript and Expo Router, one code base for the web and Android, with pnpm ([.context/README.md](../../README.md), [tasks.md](../../tasks.md) T001).
 - Habits are kept on the device: AsyncStorage on Android, localStorage on the web. No sign-in and no server ([tasks.md](../../tasks.md) T002, [.context/README.md](../../README.md)).
-- No app code is in the repo yet.
+- Habits are stored by `src/habits/storage.ts` as one JSON list under the AsyncStorage key `habits.v1`. On the web AsyncStorage writes to `localStorage`, so there is one code path for both.
 
 ## Lives here
 
-- Nothing yet.
+- `src/habits/storage.ts`: the habit list and its storage, with tests in `storage.test.ts`.
+- `src/app/index.tsx`: the habit list screen.
 
 ## Open
 
-- T001: scaffold the app, with lint (Biome), type checks and Vitest.
+- T003: tick-off and streaks, built on the habit list.
