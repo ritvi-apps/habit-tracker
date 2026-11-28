@@ -1,0 +1,8 @@
+#!/bin/sh
+# Blocks a push unless each pushed branch tip has a passing verdict from `babul judge`.
+zero=0000000000000000000000000000000000000000
+while read -r local_ref local_sha remote_ref remote_sha; do
+	[ "$local_sha" = "$zero" ] && continue
+	# an annotated tag is judged by the commit it names
+	babul judge --show "$(git rev-parse "$local_sha^{commit}")" || exit 1
+done
